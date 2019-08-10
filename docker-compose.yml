@@ -8,9 +8,19 @@ services:
     ports:
       - "7070:7070"
       - "8080:8080"
+    networks:
+      - spark-network
   spark-worker:
     image: kshp/spark-worker:latest
     depends_on:
       - spark-master
     ports:
       - "8081-8085:8080"
+    networks:
+      - spark-network
+
+networks:
+  spark-network:
+    driver: bridge
+    ipam:
+      driver: default
