@@ -8,10 +8,9 @@ services:
     ports:
       - "7070:7070"
       - "8080:8080"
-  spark-worker-1:
+  spark-worker:
     image: kshp/spark-worker:latest
-    container_name: spark-worker-1
     depends_on:
       - spark-master
     ports:
-      - "8081:8080"
+      - "8081-8085:8080"

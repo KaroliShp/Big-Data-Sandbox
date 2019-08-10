@@ -26,7 +26,7 @@ $ docker-machine --version
 To launch and then stop the cluster:
 
 ```
-$ docker-compose up
+$ docker-compose up --scale spark-worker=3
 $ docker-compose down
 ```
 
