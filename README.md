@@ -64,6 +64,11 @@ $ docker-machine --version
 
 ## Spark in Docker
 
+We use Spark standalone mode. As per Spark documentation ([2.4.3](https://spark.apache.org/docs/latest/spark-standalone.html)):
+
+> To install Spark Standalone mode, you simply place a compiled version of Spark on each node on the cluster.
+
+
 ### Spark-base image
 
 We use `alpine:3.10` as a base image for `spark-base` image. This will act as a base image for all further images.
@@ -80,9 +85,36 @@ The spark master node will be the one launching `/spark/bin/start-master.sh`. Th
 
 We use `kshp/spark:latest` as a base image for `spark-worker` image.
 
+### Spark driver and submitting the application
+
+We use another spark worker to act as a driver node and deploy the app in a client mode.
+
+> In client mode, the driver is launched in the same process as the client that submits the application. 
+
+> A common deployment strategy is to submit your application from a gateway machine that is physically co-located with your worker machines <...> In client mode, the driver is launched directly within the spark-submit process which acts as a client to the cluster.
+
+Moreover, cluster mode does not support Python applications.
+
 ### Spark network
 
 Docker can be used to create a local network where the containers can communicate with each other. We specify the network in `docker-compose.yml`, thus the containers will operate in `big-data-sandbox_spark-network`.
+
+## HDFS in Docker
+
+
+## Spark and HDFS integration
+
+For the PoC, we will keep HDFS and Spark clusters separate.
+
+----
+
+We keep Spark master, driver and HDFS master node (namenode) separate.
+
+> Ideally it is a good idea to keep Spark driver node or master node separate than HDFS master node. Spark driver node is for application context and Spark master node is for resource allocation. While HDFS master node (Namenode) has all metadata about HDFS files (data blocks and replicas).
+
+We keep Spark worker and HDFS worker (data) nodes together. 
+
+> In all cases, it is best to run Spark on the same [worker - karolishp] nodes as HDFS for fast access to storage.
 
 ## Inspirations
 
@@ -91,6 +123,14 @@ Spark with Docker setup inspired by:
 - https://medium.com/@marcovillarreal_40011/creating-a-spark-standalone-cluster-with-docker-and-docker-compose-ba9d743a157f
 - https://github.com/big-data-europe/docker-spark
 - https://towardsdatascience.com/a-journey-into-big-data-with-apache-spark-part-1-5dfcc2bccdd2
+
+
+HDFS with Docker setup inspired by:
+
+- https://blog.newnius.com/how-to-quickly-setup-a-hadoop-cluster-in-docker.html
+- http://bigdatums.net/2017/11/04/creating-hadoop-docker-image/
+- https://github.com/big-data-europe/docker-hadoop
+- https://www.tutorialspoint.com/hadoop/hadoop_enviornment_setup.htm
 
 ## Docker Cheat Sheat
 
